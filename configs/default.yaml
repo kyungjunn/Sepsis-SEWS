@@ -1,0 +1,10 @@
+seed: 42
+window_hours: 24
+horizon_hours: 6
+thresholds:
+  warning: 0.50
+  alert: 0.75
+paths:
+  raw: data/raw
+  processed: data/processed
+  models: models

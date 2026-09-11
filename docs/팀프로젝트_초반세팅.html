@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SEWS 팀프로젝트 초반 세팅</title>
+  <style>
+    :root {
+      --bg: #f4f1ea;
+      --paper: #fffdf8;
+      --ink: #1c1915;
+      --muted: #5c564c;
+      --line: #e4ddd0;
+      --accent: #0f6e6e;
+      --accent-ink: #083f3f;
+      --warn: #9a3412;
+      --chip: #e8f4f3;
+      --code: #1f2933;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: "Pretendard", "Noto Sans KR", "Malgun Gothic", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(1200px 500px at 10% -10%, #d7eceb 0%, transparent 55%),
+        var(--bg);
+      line-height: 1.65;
+    }
+    .wrap { max-width: 980px; margin: 0 auto; padding: 32px 20px 80px; }
+    header.hero {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 28px 28px 22px;
+      box-shadow: 0 10px 30px rgba(28, 25, 21, 0.06);
+    }
+    .kicker {
+      display: inline-block;
+      background: var(--chip);
+      color: var(--accent-ink);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      padding: 4px 10px;
+      border-radius: 999px;
+    }
+    h1 { margin: 12px 0 8px; font-size: 30px; letter-spacing: -0.03em; }
+    .lede { color: var(--muted); margin: 0 0 16px; }
+    nav.toc {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    nav.toc a {
+      color: var(--accent-ink);
+      text-decoration: none;
+      font-size: 13px;
+      background: #f3eee4;
+      padding: 6px 10px;
+      border-radius: 8px;
+    }
+    nav.toc a:hover { background: var(--chip); }
+    .verdict {
+      margin-top: 18px;
+      padding: 16px 18px;
+      border-left: 4px solid var(--warn);
+      background: #fff4ed;
+      border-radius: 0 12px 12px 0;
+    }
+    .verdict strong { color: var(--warn); }
+    section {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 22px 24px;
+      margin-top: 16px;
+    }
+    h2 { margin: 0 0 12px; font-size: 20px; }
+    h3 { margin: 20px 0 8px; font-size: 16px; }
+    p { margin: 8px 0; }
+    ul, ol { margin: 8px 0 8px 20px; padding: 0; }
+    li { margin: 4px 0; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+      margin: 10px 0 4px;
+    }
+    th, td {
+      border: 1px solid var(--line);
+      padding: 8px 10px;
+      text-align: left;
+      vertical-align: top;
+    }
+    th { background: #f6f1e8; font-weight: 700; }
+    pre, code {
+      font-family: "Cascadia Code", "Consolas", "D2Coding", monospace;
+    }
+    pre {
+      background: var(--code);
+      color: #e8eef2;
+      padding: 14px 16px;
+      border-radius: 12px;
+      overflow-x: auto;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    code { font-size: 0.92em; }
+    p code, li code, td code {
+      background: #efe8db;
+      padding: 1px 6px;
+      border-radius: 5px;
+    }
+    pre code { background: none; padding: 0; color: inherit; }
+    .tree { font-size: 12.5px; }
+    .checks label { display: block; margin: 6px 0; cursor: pointer; }
+    .muted { color: var(--muted); }
+    footer {
+      margin-top: 24px;
+      color: var(--muted);
+      font-size: 13px;
+      text-align: center;
+    }
+    @media print {
+      body { background: #fff; }
+      header.hero, section { box-shadow: none; break-inside: avoid; }
+      nav.toc { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="hero">
+      <span class="kicker">SEWS · ICU 패혈증 조기 경보 · 15주 PBL</span>
+      <h1>팀프로젝트 초반 세팅</h1>
+      <p class="lede">코딩 전에 맞출 Git, 폴더, 계약, 1주차 체크리스트. 원본 기획서는 <code>docs/프로젝트 소개.md</code>.</p>
+      <div class="verdict">
+        <strong>결론:</strong> 초기 세팅을 <code>BackEnd</code> / <code>FrontEnd</code> 두 폴더로만 나누면 안 된다.
+        이 과제는 웹앱이 아니라 데이터 → 전처리 → 학습 → FastAPI → Streamlit → Docker 파이프라인이다.
+        <b>Git 저장소는 하나(모노레포)</b>로 두고 역할은 폴더로 나눈다.
+      </div>
+      <nav class="toc">
+        <a href="#folder">폴더</a>
+        <a href="#git">Git</a>
+        <a href="#week1">1주차</a>
+        <a href="#contract">계약</a>
+        <a href="#check">체크리스트</a>
+        <a href="#ops">운영</a>
+        <a href="#next">다음 미팅</a>
+      </nav>
+    </header>
+
+    <section id="folder">
+      <h2>1. 왜 BackEnd / FrontEnd만으로는 부족한가</h2>
+      <p>기획서 모듈은 <code>src/preprocess</code>, <code>src/train</code>, <code>api/</code>, <code>dashboard/</code>, <code>docker/</code>, <code>configs/</code>다. 프론트/백만 만들면:</p>
+      <ul>
+        <li>전처리·SOFA·라벨링·특징 추출이 백엔드에 섞이거나 갈 곳이 없다.</li>
+        <li><code>.parquet</code> / 모델 가중치 / 노트북 / MLflow 로그가 Git 용량·충돌 사고를 낸다.</li>
+        <li>Streamlit이 모델을 직접 로드하기 쉬워져 API 경계가 무너진다.</li>
+      </ul>
+      <table>
+        <thead>
+          <tr><th>역할</th><th>폴더</th><th>BackEnd/FrontEnd로 치면</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>데이터 파이프라인</td><td><code>src/preprocess</code>, <code>src/features</code></td><td>둘 다 아님</td></tr>
+          <tr><td>학습·평가</td><td><code>src/train</code>, <code>src/evaluate</code></td><td>둘 다 아님</td></tr>
+          <tr><td>추론 API</td><td><code>api/</code></td><td>BackEnd</td></tr>
+          <tr><td>임상 대시보드</td><td><code>dashboard/</code></td><td>FrontEnd (Streamlit)</td></tr>
+          <tr><td>실행 환경</td><td><code>docker/</code>, <code>configs/</code></td><td>인프라</td></tr>
+          <tr><td>문서</td><td><code>docs/</code>, <code>notebooks/</code></td><td>문서</td></tr>
+        </tbody>
+      </table>
+      <p>프론트/백 <b>동시 개발</b>은 폴더 이름이 아니라 <b>JSON 계약</b>으로 한다.</p>
+      <h3>현재 Z:\SEWS 골격</h3>
+      <pre class="tree">SEWS/
+├── README.md
+├── .gitignore
+├── docs/                  # 기획서, 초반세팅, 이후 리포트
+├── notebooks/             # EDA만. 재현 로직은 src/로
+├── data/raw|interim|processed/   # Git 제외
+├── src/preprocess|features|train|evaluate|common
+├── api/                   # FastAPI 4 엔드포인트
+├── dashboard/             # Streamlit. 모델 로드 금지
+├── models/                # Git 제외
+├── configs/ docker/ tests/ scripts/</pre>
+      <p class="muted">레포를 api/dash/ml 셋으로 쪼개지 않는다. 소규모 15주 과제에서 스키마·임계값·특징 컬럼이 같은 커밋에 있어야 회귀가 보인다.</p>
+    </section>
+
+    <section id="git">
+      <h2>2. Git은 이렇게 판다</h2>
+      <p>저장소는 <code>Z:\SEWS</code> <b>한 개</b>. 드라이브 루트 <code>Z:\</code>에 이미 <code>.git</code>이 있어도 무시하고, 프로젝트 폴더 안에서 새로 초기화한다.</p>
+      <pre>cd Z:\SEWS
+git init
+git add README.md .gitignore docs
+git commit -m "chore: 저장소 초기화, 기획서와 초반 세팅 문서"</pre>
+      <h3>원격</h3>
+      <ol>
+        <li>GitHub에 <b>private</b> 저장소 <code>SEWS</code> 생성.</li>
+        <li>팀원 전원 Collaborator (Write).</li>
+        <li>PhysioNet DUA 때문에 원본 데이터 업로드 금지. 공개 전환 금지.</li>
+      </ol>
+      <pre>git remote add origin https://github.com/&lt;ORG&gt;/SEWS.git
+git branch -M main
+git push -u origin main</pre>
+      <table>
+        <thead><tr><th>브랜치</th><th>용도</th></tr></thead>
+        <tbody>
+          <tr><td><code>main</code></td><td>제출·데모 가능한 상태만. 직접 커밋 금지</td></tr>
+          <tr><td><code>develop</code></td><td>통합 브랜치. PR 머지 대상</td></tr>
+          <tr><td><code>feat/이니셜-주제</code></td><td>예: <code>feat/km-sofa</code>, <code>feat/jh-api-health</code></td></tr>
+          <tr><td><code>fix/이니셜-이슈</code></td><td>버그</td></tr>
+        </tbody>
+      </table>
+      <ul>
+        <li><code>main</code> ← <code>develop</code>만, 마일스톤 때.</li>
+        <li>PR 없이 <code>develop</code> 푸시 금지. 한 PR = 한 주제.</li>
+        <li>머지 전 1명 리뷰. 작성자 셀프머지 금지.</li>
+      </ul>
+      <h3>커밋 메시지</h3>
+      <pre>feat: SOFA 6요소 계산 모듈
+fix: 환자ID 분리 시 시계열 누수
+docs: setA/setB 병합 전략
+chore: .gitignore에 mlruns 추가
+test: qSOFA 단위 테스트</pre>
+      <h3>절대 Git에 올리지 말 것</h3>
+      <ul>
+        <li><code>data/raw</code>, <code>interim</code>, <code>processed</code></li>
+        <li><code>models/*.pkl</code>, <code>*.pt</code>, <code>*.parquet</code></li>
+        <li><code>.env</code>, PhysioNet 계정, API 키, <code>mlruns/</code></li>
+      </ul>
+      <p>데이터는 NAS/드라이브 공유 후 로컬은 <code>configs/paths.yaml</code>로 가리킨다.</p>
+    </section>
+
+    <section id="week1">
+      <h2>3. 코딩 전에 확정할 것 (1주차 = T1~T3)</h2>
+      <p>이게 끝나기 전에 모델 코드를 짜면 전부 다시 짠다.</p>
+      <h3>사람</h3>
+      <table>
+        <thead><tr><th>역할</th><th>이름</th><th>Learning Issue</th><th>주 산출물</th></tr></thead>
+        <tbody>
+          <tr><td>데이터 엔지니어</td><td></td><td>#1 #2 #3</td><td>EDA, SOFA, 라벨, split</td></tr>
+          <tr><td>ML 엔지니어 A</td><td></td><td>#4 #5 #6</td><td>Utility, 불균형, AUPRC</td></tr>
+          <tr><td>ML 엔지니어 B</td><td></td><td>#7 #9 #10</td><td>Calibration, LSTM, Ensemble</td></tr>
+          <tr><td>백엔드</td><td></td><td>#11 #12 #13</td><td>FastAPI, SHAP, 스키마</td></tr>
+          <tr><td>프론트/MLOps</td><td></td><td>#14 #15 #16 #17</td><td>Streamlit, Docker, MLflow, 경보</td></tr>
+        </tbody>
+      </table>
+      <p>한 사람이 겸하면 <b>백엔드+프론트</b> 또는 <b>ML A+B</b>만. 데이터와 서빙을 한 사람이 다 가져가면 병목이다.</p>
+      <h3>도구</h3>
+      <table>
+        <thead><tr><th>도구</th><th>용도</th></tr></thead>
+        <tbody>
+          <tr><td>GitHub private</td><td>코드. 리더가 만들고 전원 Write</td></tr>
+          <tr><td>Notion / 이슈</td><td>주간 세미나, T1~T21</td></tr>
+          <tr><td>PhysioNet</td><td><b>전원 DUA 서명</b> 후 다운로드</td></tr>
+          <tr><td>Python 3.11</td><td>런타임 통일</td></tr>
+          <tr><td>Docker Desktop</td><td>1주차는 설치만</td></tr>
+          <tr><td>MLflow</td><td>Phase 3. 지금은 폴더만</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="contract">
+      <h2>4. 데이터 계약 · API 계약</h2>
+      <h3>데이터 (<code>docs/data-contract.md</code>)</h3>
+      <ol>
+        <li>시간 단위: 1시간 그리드 vs irregular</li>
+        <li>Observation 24h / Horizon 6h — 라벨이 붙는 시각을 그림으로</li>
+        <li>환자 ID로만 Train/Val/Test. 행 단위 split 금지 (누수)</li>
+        <li>시드 (예: 42)와 비율</li>
+        <li>setA vs setB 역할 (학습 / 외부검증)</li>
+        <li>결측: missingness indicator를 기본 특징으로 넣을지</li>
+      </ol>
+      <h3>API (프론트/백을 동시에 가는 방법)</h3>
+      <table>
+        <thead><tr><th>Method</th><th>Path</th><th>역할</th></tr></thead>
+        <tbody>
+          <tr><td>GET</td><td><code>/health</code></td><td>모델 로드, 버전</td></tr>
+          <tr><td>POST</td><td><code>/predict</code></td><td>단건 확률 + 경보</td></tr>
+          <tr><td>POST</td><td><code>/predict_batch</code></td><td>리스트</td></tr>
+          <tr><td>POST</td><td><code>/explain</code></td><td>SHAP</td></tr>
+        </tbody>
+      </table>
+      <ul>
+        <li><code>normal</code> p &lt; 0.50</li>
+        <li><code>warning</code> 0.50 ≤ p &lt; 0.75</li>
+        <li><code>alert</code> p ≥ 0.75</li>
+      </ul>
+      <p>백엔드가 없어도 프론트는 Mock JSON으로 UI를 진행한다.</p>
+      <table>
+        <thead><tr><th>지표</th><th>목표</th></tr></thead>
+        <tbody>
+          <tr><td>AUROC</td><td>≥ 0.82</td></tr>
+          <tr><td>AUPRC</td><td>≥ 0.40</td></tr>
+          <tr><td>Brier</td><td>≤ 0.15</td></tr>
+          <tr><td>추론 지연</td><td>평균·P95, 200ms 초과 시 캐시/ONNX</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="check">
+      <h2>5. 1~2주차 체크리스트</h2>
+      <div class="checks">
+        <h3>공통</h3>
+        <label><input type="checkbox" /> 역할·이름 표 채움</label>
+        <label><input type="checkbox" /> GitHub private + Collaborator</label>
+        <label><input type="checkbox" /> main / develop 보호 규칙</label>
+        <label><input type="checkbox" /> Notion 주간 세미나 템플릿 (이슈당 1페이지)</label>
+        <label><input type="checkbox" /> Python 3.11, Git, Docker Desktop</label>
+        <label><input type="checkbox" /> .gitignore가 parquet/모델을 거절하는지</label>
+        <h3>데이터</h3>
+        <label><input type="checkbox" /> 전원 PhysioNet DUA</label>
+        <label><input type="checkbox" /> data/raw 공유 방법</label>
+        <label><input type="checkbox" /> setA/setB 파일 개수·용량 기록</label>
+        <label><input type="checkbox" /> EDA 노트북 담당자</label>
+        <h3>계약 · 골격 (모델 금지)</h3>
+        <label><input type="checkbox" /> 윈도우/호라이즌 다이어그램</label>
+        <label><input type="checkbox" /> split 규칙 + 시드</label>
+        <label><input type="checkbox" /> /predict JSON 예시</label>
+        <label><input type="checkbox" /> 경보 0.50 / 0.75 초기값 문서화</label>
+        <label><input type="checkbox" /> src/common 시드 한곳</label>
+        <label><input type="checkbox" /> api /health 스켈레톤</label>
+        <label><input type="checkbox" /> dashboard Mock 화면 1장</label>
+      </div>
+    </section>
+
+    <section id="ops">
+      <h2>6. 운영 · 소유권 · 하지 말 것</h2>
+      <ul>
+        <li>세미나 주 1회, 인당 15분.</li>
+        <li>스탠드업: 어제 / 오늘 / 막힌 것.</li>
+        <li>마일스톤 3·6·10·13·15주. 태그 <code>v0.3-eda</code> 형식.</li>
+      </ul>
+      <table>
+        <thead><tr><th>경로</th><th>기본 소유</th></tr></thead>
+        <tbody>
+          <tr><td><code>src/preprocess</code>, <code>features</code>, <code>notebooks/</code></td><td>데이터 엔지니어</td></tr>
+          <tr><td><code>src/train</code>, <code>evaluate</code>, <code>models/</code></td><td>ML A / B (파일 단위)</td></tr>
+          <tr><td><code>api/</code></td><td>백엔드</td></tr>
+          <tr><td><code>dashboard/</code></td><td>프론트/MLOps</td></tr>
+          <tr><td><code>docs/api-contract.md</code></td><td>백엔드 작성, 전원 승인</td></tr>
+          <tr><td><code>docs/data-contract.md</code></td><td>데이터 작성, ML 승인</td></tr>
+        </tbody>
+      </table>
+      <h3>로컬 최소선</h3>
+      <pre>cd Z:\SEWS
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install -U pip</pre>
+      <h3>하지 말 것</h3>
+      <ol>
+        <li>원본 ICU 데이터를 GitHub에 푸시</li>
+        <li>노트북에 전처리 200줄을 쌓고 src로 안 옮김</li>
+        <li>Streamlit에서 <code>joblib.load("model.pkl")</code></li>
+        <li>행 단위 random split</li>
+        <li>팀원마다 Python 버전이 다름</li>
+        <li><code>BackEnd</code>, <code>FrontEnd</code>로 현재 구조를 다시 접기</li>
+      </ol>
+    </section>
+
+    <section id="next">
+      <h2>7. 다음 미팅 안건 (90분)</h2>
+      <ol>
+        <li>역할 이름 기입 (10분)</li>
+        <li>GitHub 생성·초대·develop 보호 (15분)</li>
+        <li>DUA 상태, 다운로드 책임자 (10분)</li>
+        <li>윈도우/호라이즌 그림 합의 (20분)</li>
+        <li><code>/predict</code> JSON 초안 (20분)</li>
+        <li>다음 주 EDA 이슈 3개 (15분)</li>
+      </ol>
+      <p>이 여섯 개가 끝나면 코드를 짠다.</p>
+    </section>
+
+    <footer>SEWS · Z:\SEWS\docs · 같은 내용의 마크다운: 팀프로젝트_초반세팅.md</footer>
+  </div>
+</body>
+</html>

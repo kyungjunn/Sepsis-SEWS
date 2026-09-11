@@ -1,0 +1,59 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+env/
+.env
+.env.*
+!.env.example
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.ipynb_checkpoints/
+
+# Data & models (절대 Git에 올리지 않음)
+# 디렉터리 자체(/)가 아니라 내용(*)만 무시해야 .gitkeep 예외가 먹는다
+data/raw/*
+data/interim/*
+data/processed/*
+!data/raw/.gitkeep
+!data/interim/.gitkeep
+!data/processed/.gitkeep
+*.parquet
+*.pkl
+*.pt
+*.pth
+*.onnx
+*.h5
+models/*
+!models/.gitkeep
+
+# MLflow / experiment artifacts
+mlruns/
+mlartifacts/
+wandb/
+
+# IDE / OS
+.idea/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs / local
+logs/
+*.log
+tmp/
+.cache/
+
+# Docker local overrides
+docker-compose.override.yml
+.gjc/
