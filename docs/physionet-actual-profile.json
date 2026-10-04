@@ -1,0 +1,415 @@
+{
+  "training_setA": {
+    "files": 20336,
+    "rows": 790215,
+    "columns": 41,
+    "septic_patients": 1790,
+    "septic_patient_pct": 8.8021,
+    "positive_rows": 17136,
+    "positive_row_pct": 2.1685,
+    "length_hours": {
+      "min": 8,
+      "median": 39.0,
+      "mean": 38.858,
+      "p95": 58.0,
+      "max": 336
+    },
+    "positive_onset_hour": {
+      "min": 1,
+      "median": 29.5,
+      "mean": 50.972,
+      "p95": 180.0,
+      "max": 331
+    },
+    "age": {
+      "min": 18.11,
+      "median": 64.67,
+      "mean": 62.622,
+      "max": 89.0
+    },
+    "gender_counts": {
+      "0_female": 8502,
+      "1_male": 11834
+    },
+    "quality": {
+      "schema_bad": 0,
+      "duplicate_times": 0,
+      "missing_slots": 0,
+      "nonmonotonic": 0,
+      "label_bad": 0
+    },
+    "missing": {
+      "HR": {
+        "count": 61189,
+        "pct": 7.743
+      },
+      "O2Sat": {
+        "count": 95079,
+        "pct": 12.032
+      },
+      "Temp": {
+        "count": 523314,
+        "pct": 66.224
+      },
+      "SBP": {
+        "count": 120201,
+        "pct": 15.211
+      },
+      "MAP": {
+        "count": 80858,
+        "pct": 10.232
+      },
+      "DBP": {
+        "count": 380297,
+        "pct": 48.126
+      },
+      "Resp": {
+        "count": 77258,
+        "pct": 9.777
+      },
+      "EtCO2": {
+        "count": 790215,
+        "pct": 100.0
+      },
+      "BaseExcess": {
+        "count": 707834,
+        "pct": 89.575
+      },
+      "HCO3": {
+        "count": 726598,
+        "pct": 91.949
+      },
+      "FiO2": {
+        "count": 678060,
+        "pct": 85.807
+      },
+      "pH": {
+        "count": 699600,
+        "pct": 88.533
+      },
+      "PaCO2": {
+        "count": 720927,
+        "pct": 91.232
+      },
+      "SaO2": {
+        "count": 751055,
+        "pct": 95.044
+      },
+      "AST": {
+        "count": 778395,
+        "pct": 98.504
+      },
+      "BUN": {
+        "count": 725739,
+        "pct": 91.841
+      },
+      "Alkalinephos": {
+        "count": 778683,
+        "pct": 98.541
+      },
+      "Calcium": {
+        "count": 750897,
+        "pct": 95.024
+      },
+      "Chloride": {
+        "count": 724438,
+        "pct": 91.676
+      },
+      "Creatinine": {
+        "count": 737728,
+        "pct": 93.358
+      },
+      "Bilirubin_direct": {
+        "count": 789033,
+        "pct": 99.85
+      },
+      "Glucose": {
+        "count": 693559,
+        "pct": 87.768
+      },
+      "Lactate": {
+        "count": 763072,
+        "pct": 96.565
+      },
+      "Magnesium": {
+        "count": 728734,
+        "pct": 92.22
+      },
+      "Phosphate": {
+        "count": 750319,
+        "pct": 94.951
+      },
+      "Potassium": {
+        "count": 704379,
+        "pct": 89.138
+      },
+      "Bilirubin_total": {
+        "count": 780522,
+        "pct": 98.773
+      },
+      "TroponinI": {
+        "count": 789250,
+        "pct": 99.878
+      },
+      "Hct": {
+        "count": 697157,
+        "pct": 88.224
+      },
+      "Hgb": {
+        "count": 720394,
+        "pct": 91.164
+      },
+      "PTT": {
+        "count": 751909,
+        "pct": 95.152
+      },
+      "WBC": {
+        "count": 730867,
+        "pct": 92.49
+      },
+      "Fibrinogen": {
+        "count": 784185,
+        "pct": 99.237
+      },
+      "Platelets": {
+        "count": 738716,
+        "pct": 93.483
+      },
+      "Age": {
+        "count": 0,
+        "pct": 0.0
+      },
+      "Gender": {
+        "count": 0,
+        "pct": 0.0
+      },
+      "Unit1": {
+        "count": 386165,
+        "pct": 48.868
+      },
+      "Unit2": {
+        "count": 386165,
+        "pct": 48.868
+      },
+      "HospAdmTime": {
+        "count": 8,
+        "pct": 0.001
+      },
+      "ICULOS": {
+        "count": 0,
+        "pct": 0.0
+      },
+      "SepsisLabel": {
+        "count": 0,
+        "pct": 0.0
+      }
+    }
+  },
+  "training_setB": {
+    "files": 20000,
+    "rows": 761995,
+    "columns": 41,
+    "septic_patients": 1142,
+    "septic_patient_pct": 5.71,
+    "positive_rows": 10780,
+    "positive_row_pct": 1.4147,
+    "length_hours": {
+      "min": 8,
+      "median": 38.0,
+      "mean": 38.1,
+      "p95": 58.0,
+      "max": 336
+    },
+    "positive_onset_hour": {
+      "min": 1,
+      "median": 28.5,
+      "mean": 50.778,
+      "p95": 191.95000000000005,
+      "max": 331
+    },
+    "age": {
+      "min": 14.0,
+      "median": 62.0,
+      "mean": 60.649,
+      "max": 100.0
+    },
+    "gender_counts": {
+      "0_female": 9268,
+      "1_male": 10732
+    },
+    "quality": {
+      "schema_bad": 0,
+      "duplicate_times": 0,
+      "missing_slots": 0,
+      "nonmonotonic": 0,
+      "label_bad": 0
+    },
+    "missing": {
+      "HR": {
+        "count": 92210,
+        "pct": 12.101
+      },
+      "O2Sat": {
+        "count": 107657,
+        "pct": 14.128
+      },
+      "Temp": {
+        "count": 503670,
+        "pct": 66.099
+      },
+      "SBP": {
+        "count": 106064,
+        "pct": 13.919
+      },
+      "MAP": {
+        "count": 112412,
+        "pct": 14.752
+      },
+      "DBP": {
+        "count": 106257,
+        "pct": 13.945
+      },
+      "Resp": {
+        "count": 161077,
+        "pct": 21.139
+      },
+      "EtCO2": {
+        "count": 704359,
+        "pct": 92.436
+      },
+      "BaseExcess": {
+        "count": 760231,
+        "pct": 99.769
+      },
+      "HCO3": {
+        "count": 760584,
+        "pct": 99.815
+      },
+      "FiO2": {
+        "count": 744785,
+        "pct": 97.741
+      },
+      "pH": {
+        "count": 745037,
+        "pct": 97.775
+      },
+      "PaCO2": {
+        "count": 744982,
+        "pct": 97.767
+      },
+      "SaO2": {
+        "count": 747594,
+        "pct": 98.11
+      },
+      "AST": {
+        "count": 748632,
+        "pct": 98.246
+      },
+      "BUN": {
+        "count": 719903,
+        "pct": 94.476
+      },
+      "Alkalinephos": {
+        "count": 748586,
+        "pct": 98.24
+      },
+      "Calcium": {
+        "count": 709982,
+        "pct": 93.174
+      },
+      "Chloride": {
+        "count": 757306,
+        "pct": 99.385
+      },
+      "Creatinine": {
+        "count": 719866,
+        "pct": 94.471
+      },
+      "Bilirubin_direct": {
+        "count": 760187,
+        "pct": 99.763
+      },
+      "Glucose": {
+        "count": 593135,
+        "pct": 77.84
+      },
+      "Lactate": {
+        "count": 747692,
+        "pct": 98.123
+      },
+      "Magnesium": {
+        "count": 725525,
+        "pct": 95.214
+      },
+      "Phosphate": {
+        "count": 739590,
+        "pct": 97.06
+      },
+      "Potassium": {
+        "count": 703306,
+        "pct": 92.298
+      },
+      "Bilirubin_total": {
+        "count": 748547,
+        "pct": 98.235
+      },
+      "TroponinI": {
+        "count": 748179,
+        "pct": 98.187
+      },
+      "Hct": {
+        "count": 717620,
+        "pct": 94.176
+      },
+      "Hgb": {
+        "count": 717225,
+        "pct": 94.125
+      },
+      "PTT": {
+        "count": 754602,
+        "pct": 99.03
+      },
+      "WBC": {
+        "count": 721896,
+        "pct": 94.738
+      },
+      "Fibrinogen": {
+        "count": 757783,
+        "pct": 99.447
+      },
+      "Platelets": {
+        "count": 721285,
+        "pct": 94.657
+      },
+      "Age": {
+        "count": 0,
+        "pct": 0.0
+      },
+      "Gender": {
+        "count": 0,
+        "pct": 0.0
+      },
+      "Unit1": {
+        "count": 225795,
+        "pct": 29.632
+      },
+      "Unit2": {
+        "count": 225795,
+        "pct": 29.632
+      },
+      "HospAdmTime": {
+        "count": 0,
+        "pct": 0.0
+      },
+      "ICULOS": {
+        "count": 0,
+        "pct": 0.0
+      },
+      "SepsisLabel": {
+        "count": 0,
+        "pct": 0.0
+      }
+    }
+  },
+  "source": "physionet-data\\physionet.org\\files\\challenge-2019\\1.0.0\\training"
+}

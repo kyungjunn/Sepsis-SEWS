@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>setA · setB 패혈증 / 비패혈증 변수 분포</title>
+  <style>
+    :root {
+      --bg: #f4f1ea;
+      --paper: #fffdf8;
+      --ink: #1c1915;
+      --muted: #5c564c;
+      --line: #e4ddd0;
+      --accent: #0f6e6e;
+      --accent-ink: #083f3f;
+      --warn: #9a3412;
+      --chip: #e8f4f3;
+      --code: #1f2933;
+      --good: #0f6e6e;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: "Pretendard", "Noto Sans KR", "Malgun Gothic", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(1200px 500px at 10% -10%, #d7eceb 0%, transparent 55%),
+        var(--bg);
+      line-height: 1.65;
+    }
+    .wrap { max-width: 1040px; margin: 0 auto; padding: 32px 20px 80px; }
+    header.hero {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 28px 28px 22px;
+      box-shadow: 0 10px 30px rgba(28, 25, 21, 0.06);
+    }
+    .kicker {
+      display: inline-block;
+      background: var(--chip);
+      color: var(--accent-ink);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      padding: 4px 10px;
+      border-radius: 999px;
+    }
+    h1 { margin: 12px 0 8px; font-size: 28px; letter-spacing: -0.03em; }
+    .lede { color: var(--muted); margin: 0 0 16px; }
+    nav.toc {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    nav.toc a {
+      color: var(--accent-ink);
+      text-decoration: none;
+      font-size: 13px;
+      background: #f3eee4;
+      padding: 6px 10px;
+      border-radius: 8px;
+    }
+    nav.toc a:hover { background: var(--chip); }
+    .verdict {
+      margin-top: 18px;
+      padding: 16px 18px;
+      border-left: 4px solid var(--warn);
+      background: #fff4ed;
+      border-radius: 0 12px 12px 0;
+    }
+    .verdict strong { color: var(--warn); }
+    .note {
+      margin-top: 14px;
+      padding: 14px 16px;
+      border-left: 4px solid var(--accent);
+      background: #eef7f6;
+      border-radius: 0 12px 12px 0;
+    }
+    section {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 22px 24px;
+      margin-top: 16px;
+    }
+    h2 { margin: 0 0 12px; font-size: 20px; }
+    h3 { margin: 20px 0 8px; font-size: 16px; }
+    p { margin: 8px 0; }
+    ul, ol { margin: 8px 0 8px 20px; padding: 0; }
+    li { margin: 4px 0; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13.5px;
+      margin: 10px 0 4px;
+    }
+    th, td {
+      border: 1px solid var(--line);
+      padding: 7px 9px;
+      text-align: left;
+      vertical-align: top;
+    }
+    th { background: #f6f1e8; font-weight: 700; }
+    td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+    tr.hl td { background: #e8f4f3; }
+    .hi { font-weight: 700; color: var(--accent-ink); }
+    pre, code {
+      font-family: "Cascadia Code", "Consolas", "D2Coding", monospace;
+    }
+    pre {
+      background: var(--code);
+      color: #e8eef2;
+      padding: 14px 16px;
+      border-radius: 12px;
+      overflow-x: auto;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    code { font-size: 0.92em; }
+    p code, li code, td code {
+      background: #efe8db;
+      padding: 1px 6px;
+      border-radius: 5px;
+    }
+    pre code { background: none; padding: 0; color: inherit; }
+    .muted { color: var(--muted); }
+    .scroll { overflow-x: auto; }
+    footer {
+      margin-top: 24px;
+      color: var(--muted);
+      font-size: 13px;
+      text-align: center;
+    }
+    @media print {
+      body { background: #fff; }
+      header.hero, section { box-shadow: none; break-inside: avoid; }
+      nav.toc { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="hero">
+      <span class="kicker">SEWS · 데이터 이해 · 2026-09-20</span>
+      <h1>setA · setB 패혈증 / 비패혈증 변수 분포</h1>
+      <p class="lede">
+        PhysioNet 2019 공개 학습 파일 40,336개를
+        <b>병원(setA / setB)</b>과 <b>패혈증 여부</b>로 나눠 집계했다.
+        의학 용어가 처음인 팀원 기준. 진단이 아니라 모델 입력을 고르기 위한 읽기다.
+      </p>
+      <div class="verdict">
+        <strong>지난 비교와의 차이:</strong>
+        이전 “주요 변수 분포”는 ICU 환자 <b>전원</b>을 병원끼리만 본 결과다. 패혈증 환자만 본 것이 아니다.
+        이번 문서는 같은 파일에서 패혈증 / 비패혈증을 나눈다.
+      </div>
+      <div class="note">
+        <b>한 줄:</b> 같은 병원 안에서 패혈증을 가르는 숫자는 주로 <b>심박수</b>와 <b>호흡수</b>다.
+        <b>평균동맥압(MAP)</b> 차이는 패혈증이 아니라 병원 기록 습관에 가깝다.
+        젖산은 값보다 <b>검사를 했느냐</b>가 먼저다.
+      </div>
+      <nav class="toc">
+        <a href="#terms">용어</a>
+        <a href="#vars">변수</a>
+        <a href="#counts">인원</a>
+        <a href="#within">같은 병원</a>
+        <a href="#hour">그 시간</a>
+        <a href="#between">병원끼리</a>
+        <a href="#read">변수별</a>
+        <a href="#model">모델링</a>
+      </nav>
+    </header>
+
+    <section id="terms">
+      <h2>1. 쉬운 용어</h2>
+      <div class="scroll">
+        <table>
+          <thead><tr><th>용어</th><th>쉬운 설명</th></tr></thead>
+          <tbody>
+            <tr><td><b>패혈증(Sepsis)</b></td><td>감염에 몸이 과하게 반응해 장기가 손상되는 응급 상태. “균이 피에 있는 병”만 뜻하지 않는다.</td></tr>
+            <tr><td><b>ICU</b></td><td>중환자실. 숨·혈압·의식을 계속 봐야 하는 곳.</td></tr>
+            <tr><td><b>setA</b></td><td>Beth Israel Deaconess 계열 ICU. 학습·검증용. 20,336명.</td></tr>
+            <tr><td><b>setB</b></td><td>Emory 계열 ICU. 다른 병원 최종 테스트용. 20,000명.</td></tr>
+            <tr><td><b>활력징후</b></td><td>심박수·혈압·호흡수·체온·산소포화도처럼 자주 재는 기본값.</td></tr>
+            <tr><td><b>검사값(랩)</b></td><td>피를 뽑아 검사실이 내는 숫자. 젖산, 백혈구, 크레아티닌 등. 매시간 나오지 않는다.</td></tr>
+            <tr><td><code>SepsisLabel</code></td><td>이 데이터의 정답 열. 0 또는 1.</td></tr>
+            <tr><td><b>결측(NaN)</b></td><td>그 시간에 측정이 없어 칸이 비어 있음. 0이 아니다.</td></tr>
+            <tr><td><b>중앙값</b></td><td>중간 사람. 평균보다 극단값에 안 흔들린다.</td></tr>
+            <tr><td><b>p5 / p95</b></td><td>아래에서 5%, 위에서 5%를 자른 값. 흔한 구간의 양쪽 끝.</td></tr>
+            <tr><td><b>SMD</b></td><td>두 집단 평균이 얼마나 갈리는지. 대략 |0.2|부터 “좀 다르다”, |0.5|면 “꽤 다르다”. 부호는 왼쪽 − 오른쪽.</td></tr>
+            <tr><td><b>시간 행</b></td><td>환자 한 명의 특정 1시간. 파일의 한 줄.</td></tr>
+            <tr><td><b>환자 평균</b></td><td>그 환자에게 관측된 값의 평균 1개. 체류가 긴 환자가 표를 독점하지 않게 한다.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3>이 문서의 두 층</h3>
+      <table>
+        <thead><tr><th>층</th><th>정의</th><th>질문에 답하는 방식</th></tr></thead>
+        <tbody>
+          <tr><td><b>환자 단위</b></td><td>그 사람에게 <code>SepsisLabel=1</code>이 <b>한 번이라도</b> 있으면 패혈증 환자</td><td>“이런 사람 vs 저런 사람”</td></tr>
+          <tr><td><b>시간 행</b></td><td><b>그 한 시간</b>의 라벨이 1인지</td><td>“위험한 그 시각의 숫자”</td></tr>
+        </tbody>
+      </table>
+      <p>라벨 1은 공식 발생 시각보다 <b>최대 6시간 앞</b>부터 시작하고, <b>발생 후에도 퇴원할 때까지 1로 유지</b>된다. 라벨 1인 시간 = “지금 막 생기려는 순간”만이 아니다.</p>
+      <p class="muted">숫자는 값이 있는 행만 넣었다. 비어 있는 칸은 분모에서 뺐다. 재현: <code>python scripts/compare_sepsis_vs_nonsepsis.py</code></p>
+    </section>
+
+    <section id="vars">
+      <h2>2. 변수 뜻</h2>
+      <div class="scroll">
+        <table>
+          <thead><tr><th>이름</th><th>쉬운 말</th><th>단위</th><th>이 과제에서 보는 이유</th></tr></thead>
+          <tbody>
+            <tr><td><b>HR</b></td><td>1분에 심장이 뛰는 횟수. 성인 보통 60–100</td><td>bpm</td><td>감염·쇼크면 종종 빨라짐</td></tr>
+            <tr><td><b>MAP</b></td><td>장기에 피가 가는 평균 압력. 대략 (수축기 + 2×이완기) / 3</td><td>mmHg</td><td><b>65 미만</b>이면 장기에 피 부족으로 자주 봄</td></tr>
+            <tr><td><b>SBP</b></td><td>혈압의 위 숫자(수축기)</td><td>mmHg</td><td>90 미만이면 저혈압</td></tr>
+            <tr><td><b>DBP</b></td><td>혈압의 아래 숫자(이완기)</td><td>mmHg</td><td>setA는 기록이 절반만 있음</td></tr>
+            <tr><td><b>Resp</b></td><td>1분에 숨 쉬는 횟수. 보통 12–20</td><td>/min</td><td>22 이상이면 몸이 힘들다는 신호로 자주 씀</td></tr>
+            <tr><td><b>O2Sat</b></td><td>피 속 산소 비율. 보통 95 이상</td><td>%</td><td>90 미만이면 산소 부족</td></tr>
+            <tr><td><b>Temp</b></td><td>체온</td><td>°C</td><td>38.3 이상 발열, 36 미만 저체온도 신호</td></tr>
+            <tr><td><b>Lactate</b></td><td>조직이 산소를 못 쓰면 쌓이는 젖산</td><td>이 데이터는 <b>mmol/L</b> 스케일</td><td><b>2 넘으면 주의, 4 넘으면 꽤 나쁨</b>. 아플 것 같아서 찍는 검사</td></tr>
+            <tr><td><b>WBC</b></td><td>백혈구. 균과 싸우는 피 세포</td><td>10³/µL</td><td>12 넘으면 감염 쪽으로 자주 봄</td></tr>
+            <tr><td><b>Creatinine</b></td><td>콩팥이 버리는 노폐물</td><td>mg/dL</td><td>높으면 콩팥이 잘 못 걸러냄</td></tr>
+            <tr><td><b>Glucose</b></td><td>혈당</td><td>mg/dL</td><td>아픈 사람은 종종 올라감. 패혈증만의 표지는 아님</td></tr>
+            <tr><td><b>Age</b></td><td>나이</td><td>세</td><td>setA 최소 18.11세, setB 최소 14세</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>젖산은 <b>전 환자 분포가 아니다.</b> 검사를 받은 사람의 조건부 분포다. 안 찍힌 사람이 건강하다는 뜻이 아니다.</p>
+    </section>
+
+    <section id="counts">
+      <h2>3. 몇 명 · 몇 시간</h2>
+      <table>
+        <thead>
+          <tr><th>항목</th><th class="num">setA</th><th class="num">setB</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>환자 기록</td><td class="num">20,336</td><td class="num">20,000</td></tr>
+          <tr class="hl"><td><b>패혈증 환자</b> (라벨 1이 한 번이라도)</td><td class="num"><b>1,790 (8.80%)</b></td><td class="num"><b>1,142 (5.71%)</b></td></tr>
+          <tr><td>비패혈증 환자</td><td class="num">18,546</td><td class="num">18,858</td></tr>
+          <tr><td>시간 행</td><td class="num">790,215</td><td class="num">761,995</td></tr>
+          <tr class="hl"><td><b>라벨 1인 시간 행</b></td><td class="num"><b>17,136 (2.17%)</b></td><td class="num"><b>10,780 (1.41%)</b></td></tr>
+          <tr><td>라벨 0인 시간 행</td><td class="num">773,079</td><td class="num">751,215</td></tr>
+        </tbody>
+      </table>
+      <p class="muted">환자 양성률과 행 양성률이 다른 이유: 패혈증 환자도 발생 6시간 전은 0이고, 비패혈증 환자는 모든 시간이 0이다.</p>
+    </section>
+
+    <section id="within">
+      <h2>4. 같은 병원 안: 패혈증 환자 vs 아닌 환자</h2>
+      <p>환자마다 관측값의 <b>평균 1개</b>를 쓴 표다. SMD는 <b>패혈증 − 비패혈증</b>.</p>
+
+      <h3>4.1 setA (보스턴 계열)</h3>
+      <div class="scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>변수</th>
+              <th>패혈증 중앙 (평균)</th>
+              <th>비패혈 중앙 (평균)</th>
+              <th class="num">SMD</th>
+              <th>읽기</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="hl"><td>HR</td><td>88.5 (88.9)</td><td>83.5 (84.1)</td><td class="num">+0.32</td><td>심장이 더 빠름</td></tr>
+            <tr class="hl"><td>Resp</td><td>19.5 (20.0)</td><td>18.0 (18.5)</td><td class="num">+0.40</td><td>숨이 더 가쁨</td></tr>
+            <tr><td>Temp</td><td>37.08 (37.05)</td><td>36.89 (36.90)</td><td class="num">+0.24</td><td>약간 높음</td></tr>
+            <tr><td>MAP</td><td>77.2 (78.1)</td><td>77.0 (78.5)</td><td class="num">−0.04</td><td><b>거의 같음</b></td></tr>
+            <tr><td>SBP</td><td>117.9 (119.5)</td><td>118.1 (120.3)</td><td class="num">−0.05</td><td>거의 같음</td></tr>
+            <tr><td>DBP</td><td>59.6 (60.6)</td><td>59.0 (60.1)</td><td class="num">+0.05</td><td>거의 같음</td></tr>
+            <tr><td>O2Sat</td><td>97.7 (97.3)</td><td>97.4 (97.2)</td><td class="num">+0.08</td><td>거의 같음</td></tr>
+            <tr><td>Lactate</td><td>1.69 (2.07)</td><td>1.67 (2.10)</td><td class="num">−0.02</td><td><b>값도 거의 같음</b></td></tr>
+            <tr><td>WBC</td><td>11.5 (13.0)</td><td>10.8 (11.7)</td><td class="num">+0.17</td><td>약간 높음</td></tr>
+            <tr><td>Creatinine</td><td>1.00 (1.57)</td><td>0.88 (1.27)</td><td class="num">+0.20</td><td>콩팥 수치가 조금 높음</td></tr>
+            <tr><td>Glucose</td><td>130 (137)</td><td>125 (132)</td><td class="num">+0.13</td><td>혈당이 조금 높음</td></tr>
+            <tr><td>Age</td><td>65.2 (62.8)</td><td>64.6 (62.6)</td><td class="num">+0.02</td><td>나이 차이 없음</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="muted">환자 수: 패혈증 1,790 / 비패혈 18,546. 젖산을 한 번이라도 찍은 사람: 패혈증 <b>1,180 / 1,790 (65.9%)</b>, 비패혈 <b>6,553 / 18,546 (35.3%)</b>.</p>
+
+      <h3>4.2 setB (에모리 계열)</h3>
+      <div class="scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>변수</th>
+              <th>패혈증 중앙 (평균)</th>
+              <th>비패혈 중앙 (평균)</th>
+              <th class="num">SMD</th>
+              <th>읽기</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="hl"><td>HR</td><td>88.3 (89.4)</td><td>81.9 (82.7)</td><td class="num">+0.43</td><td>A보다 심박수 차이가 더 큼</td></tr>
+            <tr><td>Resp</td><td>18.9 (19.0)</td><td>18.2 (18.5)</td><td class="num">+0.14</td><td>방향은 같음, 크기는 A보다 작음</td></tr>
+            <tr><td>Temp</td><td>36.92 (36.93)</td><td>36.72 (36.76)</td><td class="num">+0.26</td><td>약간 높음</td></tr>
+            <tr><td>MAP</td><td>82.7 (84.4)</td><td>85.2 (86.9)</td><td class="num">−0.19</td><td>패혈증이 조금 낮음</td></tr>
+            <tr><td>SBP</td><td>122.8 (123.8)</td><td>125.1 (126.6)</td><td class="num">−0.15</td><td>조금 낮음</td></tr>
+            <tr><td>DBP</td><td>63.5 (64.5)</td><td>65.7 (66.8)</td><td class="num">−0.21</td><td>조금 낮음</td></tr>
+            <tr><td>O2Sat</td><td>97.4 (97.1)</td><td>97.3 (97.1)</td><td class="num">0.00</td><td>같음</td></tr>
+            <tr><td>Lactate</td><td>1.84 (2.48)</td><td>1.72 (2.24)</td><td class="num">+0.12</td><td>A와 달리 값이 조금 높음</td></tr>
+            <tr class="hl"><td>WBC</td><td>11.4 (12.5)</td><td>9.4 (10.2)</td><td class="num">+0.29</td><td>백혈구 차이가 A보다 큼</td></tr>
+            <tr><td>Creatinine</td><td>1.17 (1.88)</td><td>0.93 (1.56)</td><td class="num">+0.16</td><td>콩팥 수치가 조금 높음</td></tr>
+            <tr><td>Glucose</td><td>129 (137)</td><td>124 (131)</td><td class="num">+0.16</td><td>혈당이 조금 높음</td></tr>
+            <tr><td>Age</td><td>63.0 (60.8)</td><td>62.0 (60.6)</td><td class="num">+0.01</td><td>나이 차이 없음</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="muted">젖산 측정 환자: 패혈증 <b>639 / 1,142 (56.0%)</b>, 비패혈 <b>4,121 / 18,858 (21.9%)</b>.</p>
+
+      <h3>4.3 같은 컷을 대면 (환자 평균)</h3>
+      <p>“이 환자 평균이 임상에서 자주 쓰는 선 너머인가”를 센 비율이다. 진단 기준이 아니다.</p>
+      <div class="scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>컷</th>
+              <th>쉬운 말</th>
+              <th class="num">A 패혈</th>
+              <th class="num">A 비패혈</th>
+              <th class="num">B 패혈</th>
+              <th class="num">B 비패혈</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="hl"><td>HR ≥ 90</td><td>심장이 다소 빠름</td><td class="num hi">46.8%</td><td class="num">31.8%</td><td class="num hi">46.4%</td><td class="num">29.6%</td></tr>
+            <tr class="hl"><td>HR ≥ 100</td><td>빈맥</td><td class="num hi">24.4%</td><td class="num">13.0%</td><td class="num hi">23.3%</td><td class="num">12.5%</td></tr>
+            <tr class="hl"><td>Resp ≥ 22</td><td>숨이 가쁨</td><td class="num hi">29.0%</td><td class="num">14.2%</td><td class="num hi">21.9%</td><td class="num">9.9%</td></tr>
+            <tr><td>MAP &lt; 65</td><td>장기에 피 부족으로 자주 보는 선</td><td class="num">9.9%</td><td class="num">7.1%</td><td class="num">3.8%</td><td class="num">1.9%</td></tr>
+            <tr><td>SBP &lt; 90</td><td>수축기 저혈압</td><td class="num">2.1%</td><td class="num">1.3%</td><td class="num">3.0%</td><td class="num">1.1%</td></tr>
+            <tr><td>Temp ≥ 38.3</td><td>발열</td><td class="num">3.1%</td><td class="num">0.6%</td><td class="num">3.0%</td><td class="num">0.4%</td></tr>
+            <tr><td>Temp &lt; 36</td><td>저체온</td><td class="num">6.4%</td><td class="num">3.5%</td><td class="num">8.9%</td><td class="num">4.4%</td></tr>
+            <tr><td>WBC &gt; 12</td><td>백혈구가 많음</td><td class="num">46.4%</td><td class="num">38.8%</td><td class="num">44.0%</td><td class="num">26.1%</td></tr>
+            <tr><td>Creatinine &gt; 1.2</td><td>콩팥 수치가 높음</td><td class="num">37.5%</td><td class="num">24.8%</td><td class="num">48.5%</td><td class="num">29.9%</td></tr>
+            <tr><td>Lactate &gt; 2</td><td>젖산 주의 (찍힌 사람만)</td><td class="num">35.8%</td><td class="num">35.2%</td><td class="num">43.5%</td><td class="num">39.1%</td></tr>
+            <tr><td>Lactate ≥ 4</td><td>젖산이 꽤 높음 (찍힌 사람만)</td><td class="num">6.5%</td><td class="num">7.0%</td><td class="num">13.5%</td><td class="num">10.2%</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <ul>
+        <li><b>HR ≥ 90, Resp ≥ 22</b>가 두 병원 모두에서 패혈증 쪽 비율이 분명하게 높다.</li>
+        <li><b>MAP &lt; 65</b>는 같은 병원 안 차이가 작다. 대신 setA 전체가 setB보다 이 선을 훨씬 많이 넘는다.</li>
+        <li><b>Lactate &gt; 2</b>는 setA에서 패혈/비패혈이 같다. 검사를 받은 사람만 남기 때문이다.</li>
+      </ul>
+    </section>
+
+    <section id="hour">
+      <h2>5. 위험한 그 시간 vs 아닌 시간</h2>
+      <p>한 시간의 라벨이 1인지로 나눈 표다. 발생 이후 시간도 포함. SMD는 <b>라벨 1 − 라벨 0</b>.</p>
+      <h3>5.1 중앙값</h3>
+      <div class="scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>변수</th>
+              <th class="num">A 라벨1</th>
+              <th class="num">A 라벨0</th>
+              <th class="num">B 라벨1</th>
+              <th class="num">B 라벨0</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="hl"><td>HR</td><td class="num">89.5</td><td class="num">84.0</td><td class="num">90.0</td><td class="num">83.0</td></tr>
+            <tr class="hl"><td>Resp</td><td class="num">20.0</td><td class="num">18.0</td><td class="num">20.0</td><td class="num">18.0</td></tr>
+            <tr><td>Temp</td><td class="num">37.30</td><td class="num">37.06</td><td class="num">37.30</td><td class="num">36.90</td></tr>
+            <tr><td>MAP</td><td class="num">76.0</td><td class="num">77.0</td><td class="num">81.0</td><td class="num">84.0</td></tr>
+            <tr><td>SBP</td><td class="num">118.0</td><td class="num">118.5</td><td class="num">119.5</td><td class="num">124.0</td></tr>
+            <tr><td>Lactate</td><td class="num">1.70</td><td class="num">1.80</td><td class="num">1.85</td><td class="num">1.98</td></tr>
+            <tr><td>WBC</td><td class="num">11.7</td><td class="num">10.8</td><td class="num">11.9</td><td class="num">9.5</td></tr>
+            <tr><td>Creatinine</td><td class="num">1.10</td><td class="num">0.90</td><td class="num">1.32</td><td class="num">0.98</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="muted">시간 행 수: A 라벨1 17,136 / 라벨0 773,079. B 라벨1 10,780 / 라벨0 751,215. 변수마다 결측이 있어 n은 이보다 작다.</p>
+
+      <h3>5.2 시간 행 컷</h3>
+      <div class="scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>컷</th>
+              <th class="num">A 라벨1</th>
+              <th class="num">A 라벨0</th>
+              <th class="num">B 라벨1</th>
+              <th class="num">B 라벨0</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="hl"><td>HR ≥ 100</td><td class="num hi">30.6%</td><td class="num">18.7%</td><td class="num hi">32.7%</td><td class="num">18.5%</td></tr>
+            <tr class="hl"><td>Resp ≥ 22</td><td class="num hi">40.0%</td><td class="num">26.2%</td><td class="num hi">35.2%</td><td class="num">22.6%</td></tr>
+            <tr class="hl"><td>Temp ≥ 38.3</td><td class="num hi">13.8%</td><td class="num">4.2%</td><td class="num hi">17.6%</td><td class="num">3.5%</td></tr>
+            <tr><td>MAP &lt; 65</td><td class="num">18.2%</td><td class="num">15.6%</td><td class="num">11.3%</td><td class="num">6.4%</td></tr>
+            <tr><td>SBP &lt; 90</td><td class="num">6.1%</td><td class="num">4.1%</td><td class="num">8.3%</td><td class="num">4.0%</td></tr>
+            <tr><td>O2Sat &lt; 90</td><td class="num">1.7%</td><td class="num">1.1%</td><td class="num">3.4%</td><td class="num">1.2%</td></tr>
+            <tr><td>WBC &gt; 12</td><td class="num">47.5%</td><td class="num">39.7%</td><td class="num">48.8%</td><td class="num">29.3%</td></tr>
+            <tr><td>Lactate ≥ 4 (찍힌 행만)</td><td class="num">13.2%</td><td class="num">13.2%</td><td class="num">21.2%</td><td class="num">20.3%</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>환자 평균보다 <b>그 시간</b>에서 빈맥·빈호흡·발열이 더 잘 보인다. 젖산 ≥ 4 비율은 라벨 0/1이 비슷하다. 찍는 순간이 이미 나쁜 사람이라서다.</p>
+      <table>
+        <thead><tr><th>시간 행 SMD (라벨1 − 라벨0)</th><th class="num">setA</th><th class="num">setB</th></tr></thead>
+        <tbody>
+          <tr><td>HR</td><td class="num">+0.31</td><td class="num">+0.40</td></tr>
+          <tr><td>Resp</td><td class="num">+0.35</td><td class="num">+0.23</td></tr>
+          <tr><td>Temp</td><td class="num">+0.26</td><td class="num">+0.34</td></tr>
+          <tr><td>MAP</td><td class="num">−0.04</td><td class="num">−0.18</td></tr>
+          <tr><td>WBC</td><td class="num">+0.15</td><td class="num">+0.31</td></tr>
+          <tr><td>Creatinine</td><td class="num">+0.19</td><td class="num">+0.21</td></tr>
+          <tr><td>Lactate</td><td class="num">−0.02</td><td class="num">+0.08</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="between">
+      <h2>6. 병원끼리: 패혈증끼리, 비패혈증끼리</h2>
+      <p>지난 조사의 MAP 이동이 “패혈증 때문에”인지 확인하는 표. SMD는 <b>setA − setB</b>. 환자 평균.</p>
+
+      <h3>6.1 패혈증 환자만 (A 1,790 vs B 1,142)</h3>
+      <div class="scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>변수</th>
+              <th class="num">A 중앙</th>
+              <th class="num">B 중앙</th>
+              <th class="num">SMD</th>
+              <th>읽기</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>HR</td><td class="num">88.5</td><td class="num">88.3</td><td class="num">−0.03</td><td><b>같음</b></td></tr>
+            <tr class="hl"><td>MAP</td><td class="num">77.2</td><td class="num">82.7</td><td class="num">−0.54</td><td>A가 한 단계 낮음</td></tr>
+            <tr><td>SBP</td><td class="num">117.9</td><td class="num">122.8</td><td class="num">−0.23</td><td>A가 낮음</td></tr>
+            <tr><td>DBP</td><td class="num">59.6</td><td class="num">63.5</td><td class="num">−0.37</td><td>A가 낮음</td></tr>
+            <tr><td>Resp</td><td class="num">19.5</td><td class="num">18.9</td><td class="num">+0.23</td><td>A가 조금 빠름</td></tr>
+            <tr><td>Lactate</td><td class="num">1.69</td><td class="num">1.84</td><td class="num">−0.23</td><td>B가 조금 높음</td></tr>
+            <tr><td>WBC</td><td class="num">11.5</td><td class="num">11.4</td><td class="num">+0.06</td><td>같음</td></tr>
+            <tr><td>Creatinine</td><td class="num">1.00</td><td class="num">1.17</td><td class="num">−0.17</td><td>B 꼬리가 더 김</td></tr>
+            <tr><td>Age</td><td class="num">65.2</td><td class="num">63.0</td><td class="num">+0.12</td><td>A가 약 2세 많음</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>패혈증 환자 MAP &lt; 65: <b>A 9.9% vs B 3.8%</b>.</p>
+
+      <h3>6.2 비패혈증 환자만 (A 18,546 vs B 18,858)</h3>
+      <div class="scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>변수</th>
+              <th class="num">A 중앙</th>
+              <th class="num">B 중앙</th>
+              <th class="num">SMD</th>
+              <th>읽기</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>HR</td><td class="num">83.5</td><td class="num">81.9</td><td class="num">+0.10</td><td>거의 같음</td></tr>
+            <tr class="hl"><td>MAP</td><td class="num">77.0</td><td class="num">85.2</td><td class="num">−0.70</td><td>차이가 패혈증끼리보다 더 큼</td></tr>
+            <tr><td>SBP</td><td class="num">118.1</td><td class="num">125.1</td><td class="num">−0.36</td><td>A가 낮음</td></tr>
+            <tr><td>DBP</td><td class="num">59.0</td><td class="num">65.7</td><td class="num">−0.64</td><td>A가 낮음</td></tr>
+            <tr><td>Resp</td><td class="num">18.0</td><td class="num">18.2</td><td class="num">0.00</td><td>같음</td></tr>
+            <tr><td>Lactate</td><td class="num">1.67</td><td class="num">1.72</td><td class="num">−0.08</td><td>거의 같음</td></tr>
+            <tr><td>WBC</td><td class="num">10.8</td><td class="num">9.4</td><td class="num">+0.23</td><td>A가 높음</td></tr>
+            <tr><td>Age</td><td class="num">64.6</td><td class="num">62.0</td><td class="num">+0.12</td><td>A가 약 2세 많음</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>비패혈증 MAP &lt; 65: <b>A 7.1% vs B 1.9%</b>.</p>
+      <div class="note">혈압 차이는 패혈증 여부와 별개로 <b>병원 전체의 수준 이동</b>이다.</div>
+    </section>
+
+    <section id="read">
+      <h2>7. 변수별 한 단락</h2>
+      <h3>HR (심박수)</h3>
+      <p>두 병원 패혈증 환자 중앙이 둘 다 약 88이다. 비패혈증은 82–84. 빈맥 비율이 패혈증에서 약 1.5배. 병원 간보다 패혈증 여부가 더 잘 갈린다.</p>
+      <h3>Resp (호흡수)</h3>
+      <p>setA에서 환자 단위 SMD가 가장 크다(+0.40). 시간 행에서 라벨 1일 때 중앙이 20, 아니면 18. setB도 방향은 같지만 크기는 작다.</p>
+      <h3>MAP · SBP · DBP (혈압)</h3>
+      <p>같은 병원 안 패혈/비패혈 차이는 작다. 병원 간 차이는 크다. setA 혈압이 원래 낮게 기록된다. <code>MAP &lt; 65</code> 규칙을 두 병원에 같은 숫자로 쓰면, 패혈증이 아니라 병원 습관을 외우게 된다.</p>
+      <h3>Temp (체온)</h3>
+      <p>환자 평균 발열(≥38.3)은 패혈증 약 3%, 비패혈 0.5% 전후. 라벨 1인 <b>그 시간</b>에서는 14–18%까지 올라간다. 평균보다 그 시각 값이 더 쓸모 있다.</p>
+      <h3>Lactate (젖산)</h3>
+      <p>값의 중앙은 setA에서 패혈/비패혈이 같다(1.69 vs 1.67). 차이는 검사율이다. 패혈증 환자의 56–66%가 한 번이라도 찍고, 비패혈증은 22–35%만 찍는다. 모델에는 값과 함께 <b>측정 여부 · 마지막 측정 후 경과 시간</b>이 필요하다.</p>
+      <h3>WBC · Creatinine</h3>
+      <p>패혈증 쪽에서 조금 높다. setB 비패혈증 WBC 중앙(9.4)이 setA 비패혈증(10.8)보다 낮아서, 병원 기준선이 다르다.</p>
+      <h3>O2Sat · Age</h3>
+      <p>산소포화도는 거의 안 갈린다. 나이도 패혈/비패혈이 같다.</p>
+    </section>
+
+    <section id="model">
+      <h2>8. 모델링에 바로 쓰는 메모</h2>
+      <ol>
+        <li><b>공통으로 쓰기 좋은 신호:</b> HR, Resp, (그 시각의) Temp. 병원 간 위치 이동이 작고, 패혈증 여부와는 갈린다.</li>
+        <li><b>병원 이동이 큰 수준값:</b> MAP, DBP, SBP. 원시 컷보다 24시간 <b>변화량(delta / slope)</b> 또는 환자 안 상대값이 안전하다.</li>
+        <li><b>랩:</b> 값만 넣고 결측을 평균으로 메우지 않는다. 특히 Lactate.</li>
+        <li>규칙 베이스라인(<code>MAP&lt;65</code>, <code>Lactate&gt;2</code>)도 세트별로 따로 적는다. 같은 숫자가 같은 의미를 갖지 않는다.</li>
+        <li>setB를 보고 모델을 반복 수정하지 않는다. 팀 계약: setA = Train·Validation, setB = 최종 Test.</li>
+      </ol>
+      <h3>이 문서가 아닌 것</h3>
+      <ul>
+        <li><code>docs/setA-setB-variable-distribution.json</code> : ICU <b>전원</b>의 병원 비교. 패혈증 여부로 나누지 않음.</li>
+        <li>결측률 비교, 측정 빈도 비교, 라벨 비율만의 비교: 별도 조사 항목.</li>
+        <li>진단 가이드. 표의 컷은 데이터 읽기용이다.</li>
+      </ul>
+      <pre>python scripts/compare_sepsis_vs_nonsepsis.py</pre>
+      <p class="muted">숫자 원본 JSON: <code>docs/setA-setB-sepsis-vs-nonsepsis-distribution.json</code></p>
+    </section>
+
+    <footer>
+      SEWS · 2026-09-20 · 같은 내용의 마크다운:
+      <code>docs/setA-setB-sepsis-vs-nonsepsis-distribution.md</code>
+    </footer>
+  </div>
+</body>
+</html>
